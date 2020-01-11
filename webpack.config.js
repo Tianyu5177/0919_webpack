@@ -8,6 +8,8 @@
 		所有以上信息，都要在该文件里明确指出，以后运行时只需要输入：webpack即可。
 */
 const path = require('path'); //引入Node中内置的path模块，专门用于解决路径相关问题
+//引入HtmlWebpackPlugin，用于创建html文件
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
 	entry: './src/js/app.js',//设置入口
@@ -63,7 +65,7 @@ module.exports = {
 					}
 				}
 			},
-			//使用file-loader处理图片资源
+			//使用url-loader处理图片资源
 			{
         test: /\.(png|jpg|gif)$/,
         use: [
@@ -73,11 +75,24 @@ module.exports = {
 							name:'[hash:5].[ext]',
 							outputPath:"images",//配置图片输出的路径，
 							publicPath :"../dist/images",//配置引入图片的路径
-							limit: 8192 //小于8KB的图片转成base64
+							limit: 8192, //小于8KB的图片转成base64
+							esModule:false //解决html-loader处理图片时，src变为[object,Module]的问题
 						},
           },
         ],
-      },
+			},
+			//处理html中img标签
+			{
+				test: /\.(html)$/,
+				use: {
+					loader: 'html-loader'
+				}
+			}
 		]
-  }
+	},
+	plugins: [
+		new HtmlWebpackPlugin({
+      template: './src/index.html', // 以指定的html文件为模板创建新的HtML(1. 结构和原来一样 2. 会自动引入打包的资源)
+    }),
+  ]
 };

@@ -14,6 +14,8 @@ import module3 from './module3'
 import data from '../json/data.json'
 //引入less样式文件
 import '../css/index.less'
+//引入polyfill，处理js兼容性问题（代价太大）
+//import '@babel/polyfill';
 
 console.log(sum(1,2));
 console.log(sub(3,4));
@@ -25,5 +27,12 @@ setTimeout(()=>{
 	console.log('定时器到点了');
 },1000)
 
-alert(1)
-console.log(1==2);
+let p = new Promise((resolve)=>{
+	setTimeout(()=>{
+		resolve('成功的数据')
+	},1000)
+})
+p.then(
+	value => console.log(value),
+	reason => console.log(reason)
+)

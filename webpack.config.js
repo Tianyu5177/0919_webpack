@@ -12,8 +12,8 @@ const path = require('path'); //引入Node中内置的path模块，专门用于�
 module.exports = {
 	entry: './src/js/app.js',//设置入口
 	output: {//设置输出位置
-    path: path.resolve(__dirname, 'dist/js'), 
-    filename: 'app.js'
+    path: path.resolve(__dirname, 'dist'), 
+    filename: './js/app.js'
 	},
 	mode:'development',//工作模式
 	//webpack所有用到的loader，都需要配置在module.rules中。
@@ -38,7 +38,46 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/, //排除node_modules文件夹
         loader: "eslint-loader",
-      }
+			},
+			//ES6转ES5
+			{
+				test: /\.js$/,
+				exclude: /node_modules/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: [
+							[
+								'@babel/preset-env',
+								{
+									useBuiltIns: 'usage',  // 按需引入需要使用polyfill
+									corejs: {version: 3}, // 解决warn
+									targets: { // 指定兼容性处理哪些浏览器
+										"chrome": "75",
+										"ie": "8",
+									}
+								}
+							]
+						],
+						cacheDirectory: true, // 开启babel缓存
+					}
+				}
+			},
+			//使用file-loader处理图片资源
+			{
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+							name:'[hash:5].[ext]',
+							outputPath:"images",//配置图片输出的路径，
+							publicPath :"../dist/images",//配置引入图片的路径
+							limit: 8192 //小于8KB的图片转成base64
+						},
+          },
+        ],
+      },
 		]
   }
 };

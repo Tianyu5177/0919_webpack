@@ -12,6 +12,31 @@
     "webpack": "^4.41.5"
   },
   "devDependencies": {
+    "css-loader": "^3.4.2",
+    "eslint": "^6.8.0",
+    "eslint-loader": "^3.0.3",
+    "less": "^3.10.3",
+    "less-loader": "^5.0.0",
+    "style-loader": "^1.1.2",
     "webpack-cli": "^3.3.10"
-  }
+	},
+	"eslintConfig": {
+		"parserOptions": {
+			"ecmaVersion": 6,
+			"sourceType": "module"
+		},
+		"env": {
+			"browser": true,
+			"node": true
+		},
+		"globals": {
+			"$": "readonly"
+		},
+		"rules": {
+			"no-console": 0,
+			"eqeqeq": 0,
+			"no-alert": 0
+		},
+		"extends": "eslint:recommended"
+	}
 }

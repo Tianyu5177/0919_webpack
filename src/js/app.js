@@ -12,6 +12,8 @@ import {sub} from './module2'
 import module3 from './module3'
 //在es6模块化语法中，若要引入json文件，按照如下写法
 import data from '../json/data.json'
+//引入less样式文件
+import '../css/index.less'
 
 console.log(sum(1,2));
 console.log(sub(3,4));
@@ -22,3 +24,6 @@ console.log(data);//webpack能自动转换json为js
 setTimeout(()=>{
 	console.log('定时器到点了');
 },1000)
+
+alert(1)
+console.log(1==2);

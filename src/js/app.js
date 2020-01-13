@@ -19,9 +19,9 @@ import '../css/iconfont.less'
 //引入polyfill，处理js兼容性问题（代价太大）
 //import '@babel/polyfill';
 
-console.log(sum(1,2));
+console.log(sum(1,9));
 console.log(sub(3,4));
-console.log(module3.mul(3,4));
+console.log(module3.mul(3,5));
 console.log(module3.div(6,3));
 console.log(data);//webpack能自动转换json为js
 
@@ -38,3 +38,5 @@ p.then(
 	value => console.log(value),
 	reason => console.log(reason)
 )
+
+p()

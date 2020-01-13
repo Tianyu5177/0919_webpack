@@ -10,14 +10,20 @@
 const path = require('path'); //引入Node中内置的path模块，专门用于解决路径相关问题
 //引入HtmlWebpackPlugin，用于创建html文件
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+//引入清空打包目录插件
+const {CleanWebpackPlugin} = require('clean-webpack-plugin'); // 注意要解构赋值！！！
+//引入提取css插件
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+//引入插件，压缩css
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
-	entry: './src/js/app.js',//设置入口
+	entry: ['./src/js/app.js','./src/index.html'],//设置入口
 	output: {//设置输出位置
-    path: path.resolve(__dirname, 'dist'), 
+    path: path.resolve(__dirname, '../dist'), 
     filename: './js/app.js'
 	},
-	mode:'development',//工作模式
+	mode:'production',//工作模式
 	//webpack所有用到的loader，都需要配置在module.rules中。
 	//module.rules是一个数组，数组里每一项是一个对象，每个对象就是一个或一组loader的配置
 	module: {
@@ -25,14 +31,27 @@ module.exports = {
 			//处理less文件
 			{
 				test: /\.less$/, //匹配所有的.less文件
-				use:[
+				use: [
+					MiniCssExtractPlugin.loader,
+					'css-loader',
 					{
-						loader: 'style-loader' //将css模块翻译成style标签，嵌入页面
-					},{
-						loader: 'css-loader' //将编译出来的css变为Commonjs的一个模块
-					},{
-						loader: 'less-loader' //编译Less为CSS
-					}
+						loader: 'postcss-loader',
+						options: {
+							ident: 'postcss',
+							plugins: () => [
+								require('postcss-flexbugs-fixes'),
+								require('postcss-preset-env')({
+									autoprefixer: {
+										flexbox: 'no-2009',
+									},
+									stage: 3,
+								}),
+								require('postcss-normalize')(),
+							],
+							sourceMap: true,
+						},
+					},
+					'less-loader',
 				]
 			},
 			//js语法检查
@@ -104,11 +123,43 @@ module.exports = {
 	plugins: [
 		new HtmlWebpackPlugin({
       template: './src/index.html', // 以指定的html文件为模板创建新的HtML(1. 结构和原来一样 2. 会自动引入打包的资源)
-    }),
+		}),
+		new CleanWebpackPlugin(),
+		new MiniCssExtractPlugin({
+			filename: "css/[name].css",
+		}),
+		new OptimizeCssAssetsPlugin({
+			cssProcessorPluginOptions: {
+				preset: ['default', { discardComments: { removeAll: true } }],
+			},
+			cssProcessorOptions: { // 解决没有source map问题
+				map: {
+					inline: false,
+					annotation: true,
+				}
+			}
+		}),
+		new HtmlWebpackPlugin({
+			template: './src/index.html',
+			minify: {
+				removeComments: true, 
+				collapseWhitespace: true,
+				removeRedundantAttributes: true,
+				useShortDoctype: true,
+				removeEmptyAttributes: true,
+				removeStyleLinkTypeAttributes: true,
+				keepClosingSlash: true,
+				minifyJS: true,
+				minifyCSS: true,
+				minifyURLs: true,
+			}
+		})
 	],
 	devServer: {
     open: true, // 自动打开浏览器
     compress: true, // 启动gzip压缩
-    port: 4000, // 端口号
-  }
+		port: 4000, // 端口号
+		hot: true // 开启热模替换功能 HMR
+	},
+	devtool:'cheap-module-eval-source-map',
 };

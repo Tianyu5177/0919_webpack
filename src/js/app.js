@@ -14,6 +14,8 @@ import module3 from './module3'
 import data from '../json/data.json'
 //引入less样式文件
 import '../css/index.less'
+//引入字体图标样式
+import '../css/iconfont.less'
 //引入polyfill，处理js兼容性问题（代价太大）
 //import '@babel/polyfill';
 

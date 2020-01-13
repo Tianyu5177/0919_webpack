@@ -74,7 +74,7 @@ module.exports = {
             options: {
 							name:'[hash:5].[ext]',
 							outputPath:"images",//配置图片输出的路径，
-							publicPath :"../dist/images",//配置引入图片的路径
+							publicPath :"/images",//配置引入图片的路径（webpack3必须写images）
 							limit: 8192, //小于8KB的图片转成base64
 							esModule:false //解决html-loader处理图片时，src变为[object,Module]的问题
 						},
@@ -87,12 +87,28 @@ module.exports = {
 				use: {
 					loader: 'html-loader'
 				}
-			}
+			},
+			//处理其他文件
+			{
+				test: /\.(eot|svg|woff|woff2|ttf|mp3|mp4|avi)$/,  // 处理其他资源
+				loader: 'file-loader',
+				options: {
+					outputPath: 'media',
+					name: '[hash:5].[ext]'
+				}
+		}
+
 		]
 	},
+	//所有需要使用的插件在plugins中new出实例
 	plugins: [
 		new HtmlWebpackPlugin({
       template: './src/index.html', // 以指定的html文件为模板创建新的HtML(1. 结构和原来一样 2. 会自动引入打包的资源)
     }),
-  ]
+	],
+	devServer: {
+    open: true, // 自动打开浏览器
+    compress: true, // 启动gzip压缩
+    port: 4000, // 端口号
+  }
 };
